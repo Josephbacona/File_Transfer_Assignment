@@ -6,40 +6,30 @@ from tkinter.messagebox import showinfo
 import tkinter
 from tkinter import *
 
-def open_file():
-   file = fd.askopenfile(mode='r', filetypes=[('Python Files', '*.py')])
-   if file:
-      content = file.read()
-      file.close()
-      print("%d characters in this file" % len(content))
+#set where the source of the files are
+source = 'folderA'
 
-def select_file():
-    filetypes = (
-        ('text files', '*.txt'),
-        ('All files', '*.*')
-    )
-    filename = fd.askopenfilename(
-        title='Open a file',
-        initialdir='/',
-        filetypes=filetypes)
-    showinfo(
-        title='Selected File',
-        message=filename
-    )
+#set the destination path to folderB
+destination = 'folderB'
+files = os.listdir(source)
 
-def new_Files():
-    filetypes = (
-        ('text files', '*.txt'),
-        ('All files', '*.*')
-    )
-    filename = fd.askopenfilename(
-        title='new_Files',
-        initialdir='/',
-        filetypes=filetypes)
-    showinfo(
-        title='New Files',
-        message=filename
-    )
+for i in files:
+    #we are sating move the files repressented by 'i' to their new destination
+    shutil.move(source+i, destination)
+
+def chooseSource():
+    myDir = fd.askdirectory()
+    source_dir.delete(0,END)
+    source_dir.insert(0, myDir)
+
+def chooseDestination():
+    myDir = fd.askdirectory()
+    destination_dir.delete(0,END)
+    destination_dir.insert(0, myDir)
+
+def moveFiles():
+    source = source_dir.get()
+    destination = destination_dir.get()
 
 win = tkinter.Tk()
 
@@ -52,23 +42,23 @@ win.varFName = StringVar()
 win.varLName = StringVar()
 
 # Create a source Button
-btnSource = Button(win,text='Select Source: ', font=("Helvetia", 16), fg='black', bg='lightgray', command=open_file )
+btnSource = Button(win,text='Select Source: ', font=("Helvetia", 16), fg='black', bg='lightgray', command=chooseSource)
 btnSource.grid(row=0,column=0,padx=(30,0), pady=(30,0))
 
-txtSource = Entry(win,text=win.varFName, font=("Helvetia", 16), fg='black', bg='lightblue')
-txtSource.grid(row=0,column=1,padx=(30,0), pady=(30,0))
+source_dir = Entry(win,text=win.varFName, font=("Helvetia", 16), fg='black', bg='lightblue')
+source_dir.grid(row=0,column=1,padx=(30,0), pady=(30,0))
 
 # Create a destination Button
-btnDestination = Button(win,text='Select Destination: ', font=("Helvetia", 16), fg='black', bg='lightgray', command=select_file )
-btnDestination.grid(row=1,column=0,padx=(30,0), pady=(30,0))
+btnDestination = Button(win,text='Select Destination: ', font=("Helvetia", 16), fg='black', bg='lightgray', command=chooseDestination)
+btnDestination.grid(row=2,column=0,padx=(30,0), pady=(30,0))
 
-txtDestination = Entry(win,text=win.varLName, font=("Helvetia", 16), fg='black', bg='lightblue')
-txtDestination.grid(row=1,column=1,padx=(30,0), pady=(30,0))
+destination_dir = Entry(win,text=win.varLName, font=("Helvetia", 16), fg='black', bg='lightblue')
+destination_dir.grid(row=1,column=1,padx=(30,0), pady=(30,0))
 
 lblDisplay = Label(win,text='', font=("Helvetia", 16), fg='black', bg='lightgray')
 lblDisplay.grid(row=3,column=1,padx=(30,0), pady=(30,0))
 
-btnSubmit = Button(win, text="Move Files", width=10, height=2)
+btnSubmit = Button(win, text="Move Files", width=10, height=2, command=moveFiles)
 btnSubmit.grid(row=2,column=1,padx=(30,0), pady=(30,0), sticky=NE)
 
 win.mainloop() 
