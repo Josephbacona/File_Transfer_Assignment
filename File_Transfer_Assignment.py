@@ -5,17 +5,10 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import tkinter
 from tkinter import *
+from datetime import timedelta
+import datetime
 
-#set where the source of the files are
-source = 'folderA'
 
-#set the destination path to folderB
-destination = 'folderB'
-files = os.listdir(source)
-
-for i in files:
-    #we are sating move the files repressented by 'i' to their new destination
-    shutil.move(source+i, destination)
 
 def chooseSource():
     myDir = fd.askdirectory()
@@ -30,6 +23,19 @@ def chooseDestination():
 def moveFiles():
     source = source_dir.get()
     destination = destination_dir.get()
+    files = os.listdir(source)
+    for i in files:
+        filePath = os.path.join(source, i)
+
+        twentyfour_hours_ago = datetime.datetime.now() - timedelta(hours = 24)
+        mod_time = os.path.getmtime(filePath)
+        datetime_of_file = datetime.datetime.fromtimestamp(mod_time)
+
+        print(twentyfour_hours_ago)
+        if twentyfour_hours_ago < datetime_of_file:
+            #we are sating move the files repressented by 'i' to their new destination
+            shutil.move(source + '/' + i, destination)
+            print(i)
 
 win = tkinter.Tk()
 
@@ -50,7 +56,7 @@ source_dir.grid(row=0,column=1,padx=(30,0), pady=(30,0))
 
 # Create a destination Button
 btnDestination = Button(win,text='Select Destination: ', font=("Helvetia", 16), fg='black', bg='lightgray', command=chooseDestination)
-btnDestination.grid(row=2,column=0,padx=(30,0), pady=(30,0))
+btnDestination.grid(row=1,column=0,padx=(30,0), pady=(30,0))
 
 destination_dir = Entry(win,text=win.varLName, font=("Helvetia", 16), fg='black', bg='lightblue')
 destination_dir.grid(row=1,column=1,padx=(30,0), pady=(30,0))
